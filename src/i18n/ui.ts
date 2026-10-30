@@ -34,6 +34,9 @@ export interface UiDict {
   "stage4.what": string;
   "stage4.why": string;
   foot: string;
+  footerAuthor: string;
+  footerBy: string;
+  footerRights: string;
 }
 
 export const ui: Record<Lang, UiDict> = {
@@ -67,6 +70,9 @@ export const ui: Record<Lang, UiDict> = {
     "stage4.what": "Земля внутри Солнца",
     "stage4.why": "Приливное торможение тянет планету вниз, в разреженную внешнюю оболочку звезды. Здесь таймер и заканчивается.",
     foot: 'Точка отсчёта: 7,59 млрд юлианских лет после 1 января 2008 года (Schröder &amp; Smith, MNRAS 386, 155). Погрешность модели — сотни миллионов лет, так что секунды здесь для красоты.',
+    footerAuthor: 'Dima Batalshikov',
+    footerBy: 'Разработка и концепт',
+    footerRights: 'Все права защищены',
   },
   en: {
     title: "Countdown to the Sun",
@@ -98,6 +104,9 @@ export const ui: Record<Lang, UiDict> = {
     "stage4.what": "Earth inside the Sun",
     "stage4.why": "Tidal drag pulls the planet down into the star’s thin outer envelope. That’s where the timer ends.",
     foot: 'Reference point: 7.59 billion Julian years after January 1, 2008 (Schröder &amp; Smith, MNRAS 386, 155). The model’s uncertainty is hundreds of millions of years, so the seconds here are purely decorative.',
+    footerAuthor: 'Dima Batalshikov',
+    footerBy: 'Created & designed by',
+    footerRights: 'All rights reserved',
   },
   ua: {
     title: "Таймер до Сонця",
@@ -129,6 +138,9 @@ export const ui: Record<Lang, UiDict> = {
     "stage4.what": "Земля всередині Сонця",
     "stage4.why": "Приливне гальмування тягне планету вниз, у розріджену зовнішню оболонку зірки. Тут таймер і закінчується.",
     foot: 'Точка відліку: 7,59 млрд юліанських років після 1 січня 2008 року (Schröder &amp; Smith, MNRAS 386, 155). Похибка моделі — сотні мільйонів років, тож секунди тут лише для краси.',
+    footerAuthor: 'Dima Batalshikov',
+    footerBy: 'Розробка та концепт',
+    footerRights: 'Усі права захищено',
   },
 };
 
