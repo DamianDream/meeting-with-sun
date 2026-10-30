@@ -38,6 +38,8 @@ export interface UiDict {
   footerBy: string;
   footerRights: string;
   "bar.speed": string;
+  "event.life": string;
+  "event.oxygen": string;
 }
 
 export const ui: Record<Lang, UiDict> = {
@@ -75,6 +77,8 @@ export const ui: Record<Lang, UiDict> = {
     footerBy: 'Разработка и концепт',
     footerRights: 'Все права защищены',
     "bar.speed": "По модели Солнце в среднем приближается к орбите Земли со скоростью ~19,6 м в год (≈5,4 см в сутки) — на деле рост резко ускорится на стадии красного гиганта.",
+    "event.life": "Зарождение жизни: ~3,8 млрд лет назад",
+    "event.oxygen": "Кислородная катастрофа: ~2,4 млрд лет назад",
   },
   en: {
     title: "Countdown to the Sun",
@@ -110,6 +114,8 @@ export const ui: Record<Lang, UiDict> = {
     footerBy: 'Created & designed by',
     footerRights: 'All rights reserved',
     "bar.speed": "By the model, the Sun closes in on Earth's orbit at an average of ~19.6 m per year (≈5.4 cm per day) — the real approach will sharply accelerate during the red-giant stage.",
+    "event.life": "First life: ~3.8B years ago",
+    "event.oxygen": "Great Oxidation Event: ~2.4B years ago",
   },
   ua: {
     title: "Таймер до Сонця",
@@ -145,6 +151,8 @@ export const ui: Record<Lang, UiDict> = {
     footerBy: 'Розробка та концепт',
     footerRights: 'Усі права захищено',
     "bar.speed": "За моделлю Сонце в середньому наближається до орбіти Землі зі швидкістю ~19,6 м на рік (≈5,4 см на добу) — насправді зростання різко прискориться на стадії червоного гіганта.",
+    "event.life": "Зародження життя: ~3,8 млрд років тому",
+    "event.oxygen": "Кисенева катастрофа: ~2,4 млрд років тому",
   },
 };
 

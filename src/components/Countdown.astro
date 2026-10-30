@@ -19,7 +19,19 @@ const t = useTranslations(lang);
     <div class="unit ms"><span class="n" id="ms">000</span><span class="l">{t["unit.ms"]}</span></div>
   </div>
   <div class="progress">
-    <div class="bar"><i id="bar" style="width:37.6%"></i></div>
+    <div class="bar-wrap">
+      <div class="bar"><i id="bar" style="width:37.6%"></i></div>
+      <div class="bar-events">
+        <span class="bar-event up edge-start" style="left:6.3%">
+          <b class="bar-event-label">{t["event.life"]}</b>
+          <i class="bar-event-stem" aria-hidden="true"></i>
+        </span>
+        <span class="bar-event down" style="left:17.8%">
+          <i class="bar-event-stem" aria-hidden="true"></i>
+          <b class="bar-event-label">{t["event.oxygen"]}</b>
+        </span>
+      </div>
+    </div>
     <div class="bar-legend">
       <span>{t["legend.left"]}</span>
       <span><span>{t["legend.pct"]}</span> <b id="pct">37,6%</b></span>
