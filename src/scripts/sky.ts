@@ -7,6 +7,51 @@ interface Star { x: number; y: number; r: number; p: number; speed: number; spar
 let W: number, H: number;
 let stars: Star[] = [];
 
+// Наведение на Землю: курсор отслеживаем на window, а не на canvas —
+// у #sky стоит pointer-events:none, чтобы фон не мешал кликам по контенту.
+const EARTH_R = 7;
+const EARTH_HOVER_RADIUS = 26;
+let mouseX = -9999, mouseY = -9999;
+let earthHoverT = 0;
+let earthSpin = 0;
+let earthHoverPrev = false;
+
+addEventListener("mousemove", (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+addEventListener("mouseleave", () => { mouseX = -9999; mouseY = -9999; });
+
+// Материки и облака заданы долготой на старте (lon0) и широтой (lat, фикс.
+// по вертикали — не меняется при вращении, т.к. ось вращения вертикальная).
+// При рендере долгота увеличивается на earthSpin, а видимая позиция/ширина
+// считается как проекция точки на сфере — так пятна едут по горизонтали и
+// сжимаются/прячутся у края, как настоящий вращающийся глобус, а не крутятся
+// колесом в плоскости экрана.
+interface Patch { lon0: number; lat: number; w: number; h: number; color: string }
+
+// Крупные цельные материки, как на флэт-иконках глобуса — 2-3 больших пятна
+// на полушарие, а не россыпь мелких точек.
+const LANDMASSES: Patch[] = [
+  { lon0: -.1, lat: .2, w: .62, h: .66, color: "#8bc34a" },
+  { lon0: -.7, lat: -.4, w: .4, h: .44, color: "#5ea23f" },
+  { lon0: 1.9, lat: .1, w: .46, h: .58, color: "#8bc34a" },
+  { lon0: 2.5, lat: -.45, w: .28, h: .32, color: "#5ea23f" },
+];
+
+// рисует пятно на сфере радиуса r с центром в текущем начале координат
+function drawPatch(p: Patch, r: number, alphaMul: number) {
+  const lon = p.lon0 + earthSpin;
+  const cosLon = Math.cos(lon);
+  const visibility = Math.max(0, Math.min(1, (cosLon + .12) / .4));
+  if (visibility <= 0) return;
+  const x = Math.sin(lon) * r * .86;
+  const y = p.lat * r * .82;
+  const squish = Math.max(.08, Math.abs(cosLon));
+  ctx.globalAlpha = visibility * alphaMul;
+  ctx.fillStyle = p.color;
+  ctx.beginPath();
+  ctx.ellipse(x, y, p.w * r * squish, p.h * r, 0, 0, 6.29);
+  ctx.fill();
+}
+
 function resize() {
   const dpr = Math.min(devicePixelRatio || 1, 2);
   W = innerWidth; H = innerHeight;
@@ -64,11 +109,39 @@ function draw(t: number) {
   g.addColorStop(1, "rgba(8,7,13,0)");
   ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R * 1.6, 0, 6.29); ctx.fill();
 
-  // Земля
+  // Земля: при наведении курсора увеличивается и начинает вращаться
   const ex = narrow ? W * .78 : W * .62, ey = narrow ? H * .32 : H * .5;
-  const eg = ctx.createRadialGradient(ex - 2, ey - 2, 1, ex, ey, 7);
-  eg.addColorStop(0, "#bfe0ff"); eg.addColorStop(1, "#2b6fd6");
-  ctx.fillStyle = eg; ctx.beginPath(); ctx.arc(ex, ey, 6, 0, 6.29); ctx.fill();
+  const dist = Math.hypot(mouseX - ex, mouseY - ey);
+  const hovering = dist < EARTH_HOVER_RADIUS;
+  earthHoverT += ((hovering ? 1 : 0) - earthHoverT) * .12;
+  // Один оборот примерно за 14 секунд при полном наведении — похоже на
+  // медленное вращение планеты, а не на бешено крутящийся шарик.
+  if (earthHoverT > .001) earthSpin += earthHoverT * .0075;
+  if (hovering !== earthHoverPrev) {
+    document.body.style.cursor = hovering ? "pointer" : "";
+    earthHoverPrev = hovering;
+  }
+
+  const scale = 1 + earthHoverT * 2.6;
+  const r = EARTH_R * scale;
+
+  ctx.save();
+  ctx.translate(ex, ey);
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.29); ctx.clip();
+
+  // насыщенный океан-градиент — светлый блик сверху-слева, глубокий синий у края,
+  // как на плоских векторных иконках глобуса
+  const eg = ctx.createRadialGradient(-r * .35, -r * .35, r * .1, 0, 0, r);
+  eg.addColorStop(0, "#9fdcff");
+  eg.addColorStop(.55, "#2f8fe0");
+  eg.addColorStop(1, "#154f9e");
+  ctx.fillStyle = eg; ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.29); ctx.fill();
+
+  if (earthHoverT > .05) {
+    for (const land of LANDMASSES) drawPatch(land, r, earthHoverT);
+    ctx.globalAlpha = 1;
+  }
+  ctx.restore();
 
   if (!reduce) requestAnimationFrame(draw);
 }

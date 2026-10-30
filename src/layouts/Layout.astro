@@ -27,49 +27,59 @@ const localeUrls = Object.fromEntries(
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Manrope:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" />
   <script is:inline define:vars={{ lang, defaultLocale, localeUrls }}>
     (() => {
-      const LANG_KEY = "sun-timer-lang";
-      const SESSION_KEY = "sun-timer-redirect-checked";
-      const stored = localStorage.getItem(LANG_KEY);
+      // Любая ошибка внутри (navigator/localStorage заблокированы приватным
+      // режимом, iframe без storage access и т.п.) должна молча оставить
+      // страницу как есть — а дефолтная локаль (ru, "/") рендерится сервером
+      // по умолчанию, так что сайт и так открывается на RU.
+      try {
+        const LANG_KEY = "sun-timer-lang";
+        const SESSION_KEY = "sun-timer-redirect-checked";
+        const stored = localStorage.getItem(LANG_KEY);
 
-      if (lang !== defaultLocale) {
-        localStorage.setItem(LANG_KEY, lang);
-        return;
-      }
-
-      // На дефолтной локали (ru, "/") авто-редирект по сохранённому языку
-      // срабатывает не больше раза за сессию вкладки — иначе клик по "RU" в
-      // переключателе языка (ведёт на "/") тут же отбрасывал бы обратно на
-      // сохранённую локаль, и вернуться на ru вручную было бы невозможно.
-      if (sessionStorage.getItem(SESSION_KEY)) {
-        localStorage.setItem(LANG_KEY, lang);
-        return;
-      }
-      sessionStorage.setItem(SESSION_KEY, "1");
-
-      if (!stored) {
-        const tags = navigator.languages && navigator.languages.length
-          ? navigator.languages
-          : [navigator.language || ""];
-        let target = null;
-        for (const tag of tags) {
-          const [language, region] = tag.toLowerCase().split("-");
-          if (language === "uk" || region === "ua") { target = "ua"; break; }
-          if (language === "ru") { target = "ru"; break; }
-          if (language === "en") { target = "en"; break; }
+        if (lang !== defaultLocale) {
+          localStorage.setItem(LANG_KEY, lang);
+          return;
         }
-        if (target) {
-          localStorage.setItem(LANG_KEY, target);
-          location.replace(localeUrls[target]);
+
+        // На дефолтной локали (ru, "/") авто-редирект по сохранённому языку
+        // срабатывает не больше раза за сессию вкладки — иначе клик по "RU" в
+        // переключателе языка (ведёт на "/") тут же отбрасывал бы обратно на
+        // сохранённую локаль, и вернуться на ru вручную было бы невозможно.
+        if (sessionStorage.getItem(SESSION_KEY)) {
+          localStorage.setItem(LANG_KEY, lang);
+          return;
+        }
+        sessionStorage.setItem(SESSION_KEY, "1");
+
+        if (!stored) {
+          const tags = navigator.languages && navigator.languages.length
+            ? navigator.languages
+            : [navigator.language || ""];
+          let target = null;
+          for (const tag of tags) {
+            const [language, region] = (tag || "").toLowerCase().split("-");
+            if (language === "uk" || region === "ua") { target = "ua"; break; }
+            if (language === "ru") { target = "ru"; break; }
+            if (language === "en") { target = "en"; break; }
+          }
+          // Язык/регион не распознан (или API недоступно) — остаёмся на ru,
+          // это и есть дефолтная локаль текущей страницы.
+          if (target && target !== lang) {
+            localStorage.setItem(LANG_KEY, target);
+            location.replace(localeUrls[target]);
+          } else {
+            localStorage.setItem(LANG_KEY, lang);
+          }
+          return;
+        }
+
+        if (stored !== lang && localeUrls[stored]) {
+          location.replace(localeUrls[stored]);
         } else {
           localStorage.setItem(LANG_KEY, lang);
         }
-        return;
-      }
-
-      if (stored !== lang && localeUrls[stored]) {
-        location.replace(localeUrls[stored]);
-      } else {
-        localStorage.setItem(LANG_KEY, lang);
+      } catch (e) {
+        // детект не удался — страница уже отрендерена на дефолтной локали (ru)
       }
     })();
   </script>
