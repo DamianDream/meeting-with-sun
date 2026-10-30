@@ -1,0 +1,31 @@
+---
+import { useTranslations, type Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const stages = [
+  { key: "stage0", cls: "now" },
+  { key: "stage1", cls: "" },
+  { key: "stage2", cls: "" },
+  { key: "stage3", cls: "" },
+  { key: "stage4", cls: "end" },
+] as const;
+---
+
+<section>
+  <h2>{t.h2}</h2>
+  <ol class="stages">
+    {stages.map((stage) => (
+      <li class={stage.cls || undefined}>
+        <span class="when">{t[`${stage.key}.when` as keyof typeof t]}</span>
+        <span class="what">{t[`${stage.key}.what` as keyof typeof t]}</span>
+        <span class="why">{t[`${stage.key}.why` as keyof typeof t]}</span>
+      </li>
+    ))}
+  </ol>
+</section>

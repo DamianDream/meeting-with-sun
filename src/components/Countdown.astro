@@ -1,0 +1,32 @@
+---
+import { useTranslations, type Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="clock" aria-live="off">
+  <div class="years" id="years">7 590 000 000<small>{t["years.small"]}</small></div>
+  <div class="units">
+    <div class="unit"><span class="n" id="d">000</span><span class="l">{t["unit.d"]}</span></div>
+    <div class="unit"><span class="n" id="h">00</span><span class="l">{t["unit.h"]}</span></div>
+    <div class="unit"><span class="n" id="m">00</span><span class="l">{t["unit.m"]}</span></div>
+    <div class="unit"><span class="n" id="s">00</span><span class="l">{t["unit.s"]}</span></div>
+    <div class="unit ms"><span class="n" id="ms">000</span><span class="l">{t["unit.ms"]}</span></div>
+  </div>
+  <div class="progress">
+    <div class="bar"><i id="bar" style="width:37.6%"></i></div>
+    <div class="bar-legend">
+      <span>{t["legend.left"]}</span>
+      <span><span>{t["legend.pct"]}</span> <b id="pct">37,6%</b></span>
+    </div>
+  </div>
+</section>
+
+<script>
+  import "../scripts/timer.ts";
+</script>

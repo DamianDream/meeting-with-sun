@@ -1,0 +1,22 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { locales, type Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const labels: Record<Lang, string> = { ru: "RU", en: "EN", ua: "UA" };
+---
+
+<div class="lang-switch" role="group" aria-label="Язык">
+  {locales.map((code) => (
+    <a
+      href={getRelativeLocaleUrl(code, "")}
+      aria-current={code === lang ? "page" : undefined}
+    >
+      {labels[code]}
+    </a>
+  ))}
+</div>

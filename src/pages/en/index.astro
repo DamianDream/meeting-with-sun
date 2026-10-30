@@ -1,0 +1,22 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Countdown from "../../components/Countdown.astro";
+import StagesList from "../../components/StagesList.astro";
+import { useTranslations } from "../../i18n/ui";
+
+const lang = "en" as const;
+const t = useTranslations(lang);
+---
+
+<Layout lang={lang}>
+  <header>
+    <div class="eyebrow">{t.eyebrow}</div>
+    <h1>{t.h1}</h1>
+    <p class="lede" set:html={t.lede} />
+  </header>
+
+  <Countdown lang={lang} />
+  <StagesList lang={lang} />
+
+  <p class="foot" set:html={t.foot} />
+</Layout>
