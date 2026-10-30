@@ -37,6 +37,9 @@ export interface UiDict {
   footerAuthor: string;
   footerBy: string;
   footerRights: string;
+  "event.dino": string;
+  "event.civ": string;
+  "bar.speed": string;
 }
 
 export const ui: Record<Lang, UiDict> = {
@@ -73,6 +76,9 @@ export const ui: Record<Lang, UiDict> = {
     footerAuthor: 'Dima Batalshikov',
     footerBy: 'Разработка и концепт',
     footerRights: 'Все права защищены',
+    "event.dino": "Динозавры: ~165 млн лет",
+    "event.civ": "Цивилизация: ~12 тыс. лет",
+    "bar.speed": "По модели Солнце в среднем приближается к орбите Земли со скоростью ~19,6 м в год (≈5,4 см в сутки) — на деле рост резко ускорится на стадии красного гиганта.",
   },
   en: {
     title: "Countdown to the Sun",
@@ -107,6 +113,9 @@ export const ui: Record<Lang, UiDict> = {
     footerAuthor: 'Dima Batalshikov',
     footerBy: 'Created & designed by',
     footerRights: 'All rights reserved',
+    "event.dino": "Dinosaurs: ~165M years",
+    "event.civ": "Civilization: ~12,000 years",
+    "bar.speed": "By the model, the Sun closes in on Earth's orbit at an average of ~19.6 m per year (≈5.4 cm per day) — the real approach will sharply accelerate during the red-giant stage.",
   },
   ua: {
     title: "Таймер до Сонця",
@@ -141,6 +150,9 @@ export const ui: Record<Lang, UiDict> = {
     footerAuthor: 'Dima Batalshikov',
     footerBy: 'Розробка та концепт',
     footerRights: 'Усі права захищено',
+    "event.dino": "Динозаври: ~165 млн років",
+    "event.civ": "Цивілізація: ~12 тис. років",
+    "bar.speed": "За моделлю Сонце в середньому наближається до орбіти Землі зі швидкістю ~19,6 м на рік (≈5,4 см на добу) — насправді зростання різко прискориться на стадії червоного гіганта.",
   },
 };
 
