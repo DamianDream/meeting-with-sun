@@ -22,6 +22,9 @@ main {
   padding-block: 56px 72px;
   display: grid; gap: 56px;
 }
+@media (max-width: 560px) {
+  main { padding-block: 48px 56px; gap: 40px; }
+}
 .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--sun); }
 h1 { font-family: var(--display); font-weight: 900; font-size: clamp(34px, 7vw, 76px); line-height: 1; margin: 12px 0 0; text-wrap: balance; max-width: 13ch; }
 .lede { color: var(--muted); max-width: 52ch; margin: 18px 0 0; }

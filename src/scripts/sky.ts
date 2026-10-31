@@ -109,39 +109,49 @@ function draw(t: number) {
   g.addColorStop(1, "rgba(8,7,13,0)");
   ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R * 1.6, 0, 6.29); ctx.fill();
 
-  // Земля: при наведении курсора увеличивается и начинает вращаться
-  const ex = narrow ? W * .78 : W * .62, ey = narrow ? H * .32 : H * .5;
-  const dist = Math.hypot(mouseX - ex, mouseY - ey);
-  const hovering = dist < EARTH_HOVER_RADIUS;
-  earthHoverT += ((hovering ? 1 : 0) - earthHoverT) * .12;
-  // Один оборот примерно за 14 секунд при полном наведении — похоже на
-  // медленное вращение планеты, а не на бешено крутящийся шарик.
-  if (earthHoverT > .001) earthSpin += earthHoverT * .0075;
-  if (hovering !== earthHoverPrev) {
-    document.body.style.cursor = hovering ? "pointer" : "";
-    earthHoverPrev = hovering;
+  // Земля: при наведении курсора увеличивается и начинает вращаться.
+  // На мобильных/узких экранах наводить курсор нечем, а кружок при этом
+  // перекрывал текст — там Земля вообще не рисуется.
+  if (narrow) {
+    if (earthHoverPrev) {
+      document.body.style.cursor = "";
+      earthHoverPrev = false;
+    }
+    earthHoverT = 0;
+  } else {
+    const ex = W * .62, ey = H * .5;
+    const dist = Math.hypot(mouseX - ex, mouseY - ey);
+    const hovering = dist < EARTH_HOVER_RADIUS;
+    earthHoverT += ((hovering ? 1 : 0) - earthHoverT) * .12;
+    // Один оборот примерно за 14 секунд при полном наведении — похоже на
+    // медленное вращение планеты, а не на бешено крутящийся шарик.
+    if (earthHoverT > .001) earthSpin += earthHoverT * .0075;
+    if (hovering !== earthHoverPrev) {
+      document.body.style.cursor = hovering ? "pointer" : "";
+      earthHoverPrev = hovering;
+    }
+
+    const scale = 1 + earthHoverT * 2.6;
+    const r = EARTH_R * scale;
+
+    ctx.save();
+    ctx.translate(ex, ey);
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.29); ctx.clip();
+
+    // насыщенный океан-градиент — светлый блик сверху-слева, глубокий синий у края,
+    // как на плоских векторных иконках глобуса
+    const eg = ctx.createRadialGradient(-r * .35, -r * .35, r * .1, 0, 0, r);
+    eg.addColorStop(0, "#9fdcff");
+    eg.addColorStop(.55, "#2f8fe0");
+    eg.addColorStop(1, "#154f9e");
+    ctx.fillStyle = eg; ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.29); ctx.fill();
+
+    if (earthHoverT > .05) {
+      for (const land of LANDMASSES) drawPatch(land, r, earthHoverT);
+      ctx.globalAlpha = 1;
+    }
+    ctx.restore();
   }
-
-  const scale = 1 + earthHoverT * 2.6;
-  const r = EARTH_R * scale;
-
-  ctx.save();
-  ctx.translate(ex, ey);
-  ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.29); ctx.clip();
-
-  // насыщенный океан-градиент — светлый блик сверху-слева, глубокий синий у края,
-  // как на плоских векторных иконках глобуса
-  const eg = ctx.createRadialGradient(-r * .35, -r * .35, r * .1, 0, 0, r);
-  eg.addColorStop(0, "#9fdcff");
-  eg.addColorStop(.55, "#2f8fe0");
-  eg.addColorStop(1, "#154f9e");
-  ctx.fillStyle = eg; ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.29); ctx.fill();
-
-  if (earthHoverT > .05) {
-    for (const land of LANDMASSES) drawPatch(land, r, earthHoverT);
-    ctx.globalAlpha = 1;
-  }
-  ctx.restore();
 
   if (!reduce) requestAnimationFrame(draw);
 }
